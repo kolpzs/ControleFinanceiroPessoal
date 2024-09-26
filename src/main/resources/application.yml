@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: segundoperiodo
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/mensalDB?useTimezone=true&serverTimezone=America/Sao_Paulo
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
