@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class
-TipoService {
+public class TipoService {
 
     @Autowired
     private TipoRepository tipoRepository;
@@ -40,7 +39,7 @@ TipoService {
         TipoEntity tipo = findById(id);
         float somaDespesa = 0;
         for (DespesaEntity despesa : despesaRepository.findAll()) {
-            if(despesa.getTipos().contains(tipo)) {
+            if (despesa.getTipos().contains(tipo)) {
                 somaDespesa += despesa.getValor();
             }
         }
@@ -51,7 +50,7 @@ TipoService {
         TipoEntity tipo = findById(id);
         float somaReceita = 0;
         for (ReceitaEntity receita : receitaRepository.findAll()) {
-            if(receita.getTipos().contains(tipo)) {
+            if (receita.getTipos().contains(tipo)) {
                 somaReceita += receita.getValor();
             }
         }

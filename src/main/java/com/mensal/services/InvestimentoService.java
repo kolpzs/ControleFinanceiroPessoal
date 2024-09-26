@@ -48,14 +48,14 @@ public class InvestimentoService {
         float caixaAtual;
         float valorAtual;
 
-        if(investimentosBase != null) {
-            if(investimentos.getData() != null) {
+        if (investimentosBase != null) {
+            if (investimentos.getData() != null) {
                 investimentosBase.setData(investimentos.getData());
             }
-            if(investimentos.getDescricao() != null) {
+            if (investimentos.getDescricao() != null) {
                 investimentosBase.setDescricao(investimentos.getDescricao());
             }
-            if(investimentos.getValor() != 0 && investimentos.getValor() > 0) {
+            if (investimentos.getValor() != 0 && investimentos.getValor() > 0) {
                 valorAtual = meta.getCompleto() - investimentosBase.getValor() + investimentos.getValor();
                 caixaAtual = caixa.getValor() - investimentosBase.getValor() + investimentos.getValor();
                 investimentosBase.getMetas().setCompleto(valorAtual);
@@ -71,7 +71,7 @@ public class InvestimentoService {
         CarteiraEntity carteira = carteiraRepository.findById(investimento.getCarteira().getId()).orElseThrow();
         CaixaEntity caixa = carteira.getCaixa();
         float novoSaldo;
-        if(caixa != null && investimento.getValor() < caixa.getValor()) {
+        if (caixa != null && investimento.getValor() < caixa.getValor()) {
             novoSaldo = caixa.getValor() - investimento.getValor();
             caixa.setValor(novoSaldo);
             caixaRepository.save(caixa);
@@ -82,8 +82,8 @@ public class InvestimentoService {
         CarteiraEntity carteira = investimento.getCarteira();
         List<MetaEntity> metas = carteira.getMetas();
         float novoSaldo;
-        for(MetaEntity meta : metas) {
-            if(meta != null && Objects.equals(investimento.getMetas().getId(), meta.getId())) {
+        for (MetaEntity meta : metas) {
+            if (meta != null && Objects.equals(investimento.getMetas().getId(), meta.getId())) {
                 novoSaldo = meta.getCompleto() + investimento.getValor();
                 meta.setCompleto(novoSaldo);
                 metaRepository.save(meta);

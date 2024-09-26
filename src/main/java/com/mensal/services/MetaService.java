@@ -34,20 +34,20 @@ public class MetaService {
     public MetaEntity edit(MetaEntity meta) {
         MetaEntity metaBase = findById(meta.getId());
 
-        if(metaBase != null) {
-            if(meta.getNome() != null) {
+        if (metaBase != null) {
+            if (meta.getNome() != null) {
                 metaBase.setNome(meta.getNome());
             }
-            if(meta.getDescricao() != null) {
+            if (meta.getDescricao() != null) {
                 metaBase.setDescricao(meta.getDescricao());
             }
-            if(meta.getValor() != 0 && meta.getValor() > 0) {
+            if (meta.getValor() != 0 && meta.getValor() > 0) {
                 metaBase.setValor(meta.getValor());
             }
-            if(meta.getData_final() != null) {
+            if (meta.getData_final() != null) {
                 metaBase.setData_final(meta.getData_final());
             }
-            if(meta.getData_inicial() != null) {
+            if (meta.getData_inicial() != null) {
                 metaBase.setData_inicial(meta.getData_inicial());
             }
             return metaRepository.save(metaBase);

@@ -41,19 +41,19 @@ public class DespesaService {
         CaixaEntity caixa = despesaBase.getCarteira().getCaixa();
         float valorAtual;
 
-        if(despesaBase != null) {
-            if(despesa.getData() != null) {
+        if (despesaBase != null) {
+            if (despesa.getData() != null) {
                 despesaBase.setData(despesa.getData());
             }
-            if(despesa.getDescricao() != null) {
+            if (despesa.getDescricao() != null) {
                 despesaBase.setDescricao(despesa.getDescricao());
             }
-            if(despesa.getValor() >= 0) {
+            if (despesa.getValor() >= 0) {
                 valorAtual = caixa.getValor() - despesa.getValor() + despesaBase.getValor();
                 despesaBase.getCarteira().getCaixa().setValor(valorAtual);
                 despesaBase.setValor(despesa.getValor());
             }
-            if(despesa.getTipos() != null) {
+            if (despesa.getTipos() != null) {
                 despesaBase.setTipos(despesa.getTipos());
             }
             return despesaRepository.save(despesaBase);
@@ -64,7 +64,7 @@ public class DespesaService {
     private void updateCaixa(DespesaEntity despesa) {
         CaixaEntity caixa = despesa.getCarteira().getCaixa();
         float novoSaldo = 0F;
-        if(caixa != null && caixa.getId() != null && despesa.getValor() <= caixa.getValor()) {
+        if (caixa != null && caixa.getId() != null && despesa.getValor() <= caixa.getValor()) {
             novoSaldo = caixa.getValor() - despesa.getValor();
             caixa.setValor(novoSaldo);
             caixaRepository.save(caixa);

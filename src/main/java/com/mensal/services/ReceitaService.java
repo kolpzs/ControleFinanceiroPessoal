@@ -44,19 +44,19 @@ public class ReceitaService {
         CaixaEntity caixa = receitaBase.getCarteira().getCaixa();
         float valorAtual;
 
-        if(receitaBase != null) {
-            if(receita.getData() != null) {
+        if (receitaBase != null) {
+            if (receita.getData() != null) {
                 receitaBase.setData(receita.getData());
             }
-            if(receita.getDescricao() != null) {
+            if (receita.getDescricao() != null) {
                 receitaBase.setDescricao(receita.getDescricao());
             }
-            if(receita.getValor() >= 0) {
+            if (receita.getValor() >= 0) {
                 valorAtual = caixa.getValor() + receita.getValor() - receitaBase.getValor();
                 receitaBase.getCarteira().getCaixa().setValor(valorAtual);
                 receitaBase.setValor(receita.getValor());
             }
-            if(receita.getTipos() != null) {
+            if (receita.getTipos() != null) {
                 receitaBase.setTipos(receita.getTipos());
             }
             return receitaRepository.save(receitaBase);
@@ -68,7 +68,7 @@ public class ReceitaService {
         CarteiraEntity carteira = carteiraRepository.findById(receita.getCarteira().getId()).orElseThrow();
         CaixaEntity caixa = carteira.getCaixa();
         float novoSaldo = 0F;
-        if(caixa != null) {
+        if (caixa != null) {
             novoSaldo = caixa.getValor() + receita.getValor();
             caixa.setValor(novoSaldo);
             caixaRepository.save(caixa);

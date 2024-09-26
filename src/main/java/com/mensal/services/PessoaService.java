@@ -32,18 +32,18 @@ public class PessoaService {
 
     public PessoaEntity edit(PessoaEntity pesssoa) {
         PessoaEntity pessoaBase = findById(pesssoa.getId());
-        if(pessoaBase != null) {
-            if(pesssoa.getNome() != null) {
-                if(pessoaBase.getCarteira() != null) {
+        if (pessoaBase != null) {
+            if (pesssoa.getNome() != null) {
+                if (pessoaBase.getCarteira() != null) {
                     CaixaEntity caixa = pessoaBase.getCarteira().getCaixa();
                     caixa.setConta("Caixa de " + pesssoa.getNome());
                 }
                 pessoaBase.setNome(pesssoa.getNome());
             }
-            if(pesssoa.getEmail() != null) {
+            if (pesssoa.getEmail() != null) {
                 pessoaBase.setEmail(pesssoa.getEmail());
             }
-            if(pesssoa.getTelefone() != null) {
+            if (pesssoa.getTelefone() != null) {
                 pessoaBase.setTelefone(pesssoa.getTelefone());
             }
             return pessoaRepository.save(pessoaBase);
