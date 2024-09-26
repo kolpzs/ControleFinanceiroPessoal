@@ -48,8 +48,8 @@ public class DespesaService {
             if (despesa.getDescricao() != null) {
                 despesaBase.setDescricao(despesa.getDescricao());
             }
-            if (despesa.getValor() >= 0) {
-                valorAtual = caixa.getValor() - despesa.getValor() + despesaBase.getValor();
+            if (despesa.getValor() >= 0 && despesa.getValor() < caixa.getValor()) {
+                valorAtual = caixa.getValor() - despesaBase.getValor() + despesa.getValor();
                 despesaBase.getCarteira().getCaixa().setValor(valorAtual);
                 despesaBase.setValor(despesa.getValor());
             }

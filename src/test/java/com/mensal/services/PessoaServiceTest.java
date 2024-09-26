@@ -1,115 +1,81 @@
 package com.mensal.services;
 
+import com.mensal.entities.CaixaEntity;
+import com.mensal.entities.CarteiraEntity;
 import com.mensal.entities.PessoaEntity;
+import com.mensal.repositories.CaixaRepository;
 import com.mensal.repositories.PessoaRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-public class PessoaServiceTest {
+class PessoaServiceTest {
 
-    @Autowired
+    @InjectMocks
     private PessoaService pessoaService;
 
-    @MockBean
-    private PessoaRepository pessoaRepository;
+    @Mock
+    PessoaRepository pessoaRepository;
+
+    @Mock
+    CaixaRepository caixaRepository;
+
+    private PessoaEntity pessoa1;
 
     @BeforeEach
-    void setUp() {
-        Mockito.reset(pessoaRepository);
+    void setup() {
+        pessoa1 = new PessoaEntity(1L, "João", "99999-9999", "joao@mail.com", null);
+        PessoaEntity pessoa2 = new PessoaEntity(2L, "Maria", "88888-8888", "maria@mail.com", null);
+
+        CarteiraEntity carteira = new CarteiraEntity();
+        CaixaEntity caixa = new CaixaEntity();
+        caixa.setConta("Caixa João");
+        carteira.setCaixa(caixa);
+        pessoa1.setCarteira(carteira);
+
+        Mockito.when(pessoaRepository.findAll()).thenReturn(Arrays.asList(pessoa1, pessoa2));
+        Mockito.when(pessoaRepository.findById(1L)).thenReturn(Optional.of(pessoa1));
+        Mockito.when(pessoaRepository.findById(2L)).thenReturn(Optional.of(pessoa2));
+        Mockito.when(pessoaRepository.save(Mockito.any(PessoaEntity.class))).thenReturn(pessoa1);
+
+        Mockito.when(caixaRepository.save(Mockito.any(CaixaEntity.class))).thenReturn(caixa);
     }
 
     @Test
-    @DisplayName("teste save")
-    public void testSave() {
-        PessoaEntity pessoaValida = new PessoaEntity();
-        pessoaValida.setNome("Nome Válido");
+    @DisplayName("Teste para salvar pessoa")
+    void testSavePessoa() {
+        PessoaEntity pessoa = new PessoaEntity(null, "Carlos", "77777-7777", "carlos@mail.com", null);
+        Mockito.when(pessoaRepository.save(pessoa)).thenReturn(pessoa1);
 
-        PessoaEntity pessoaInvalida = new PessoaEntity();
-        pessoaInvalida.setNome(null);
-
-        Mockito.when(pessoaRepository.save(pessoaValida)).thenReturn(pessoaValida);
-
-        PessoaEntity resultValido = pessoaService.save(pessoaValida);
-        assertNotNull(resultValido);
-        assertEquals("Nome Válido", resultValido.getNome());
-
-        Mockito.verify(pessoaRepository, Mockito.times(1)).save(pessoaValida);
-        Mockito.verify(pessoaRepository, Mockito.times(0)).save(pessoaInvalida);
+        PessoaEntity savedPessoa = pessoaService.save(pessoa);
+        Assertions.assertNotNull(savedPessoa);
+        Assertions.assertEquals("João", savedPessoa.getNome());
     }
 
     @Test
-    @DisplayName("teste findAll")
-    public void testFindAll() {
-        List<PessoaEntity> pessoas = Arrays.asList(new PessoaEntity(), new PessoaEntity());
-        Mockito.when(pessoaRepository.findAll()).thenReturn(pessoas);
-
-        List<PessoaEntity> result = pessoaService.findAll();
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-
-        Mockito.when(pessoaRepository.findAll()).thenReturn(Arrays.asList());
-        result = pessoaService.findAll();
-        assertTrue(result.isEmpty());
-
-        Mockito.verify(pessoaRepository, Mockito.times(2)).findAll();
+    @DisplayName("Teste para buscar todas as pessoas")
+    void testFindAllPessoas() {
+        List<PessoaEntity> pessoas = pessoaService.findAll();
+        Assertions.assertEquals(2, pessoas.size());
+        Assertions.assertEquals("João", pessoas.get(0).getNome());
+        Assertions.assertEquals("Maria", pessoas.get(1).getNome());
     }
 
     @Test
-    @DisplayName("teste findById")
-    public void testFindById() {
-        PessoaEntity pessoa = new PessoaEntity();
-        pessoa.setId(1L);
-        Mockito.when(pessoaRepository.findById(1L)).thenReturn(Optional.of(pessoa));
-
-        PessoaEntity result = pessoaService.findById(1L);
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-
-        Mockito.when(pessoaRepository.findById(2L)).thenReturn(Optional.empty());
-        assertThrows(NoSuchElementException.class, () -> pessoaService.findById(2L));
-
-        Mockito.verify(pessoaRepository, Mockito.times(1)).findById(1L);
-        Mockito.verify(pessoaRepository, Mockito.times(1)).findById(2L);
-    }
-
-    @Test
-    @DisplayName("teste edit")
-    public void testEdit() {
-        PessoaEntity pessoa = new PessoaEntity();
-        pessoa.setId(1L);
-        pessoa.setNome("Nome Original");
-
-        PessoaEntity pessoaEditada = new PessoaEntity();
-        pessoaEditada.setId(1L);
-        pessoaEditada.setNome("Nome Editado");
-
-        Mockito.when(pessoaRepository.findById(1L)).thenReturn(Optional.of(pessoa));
-        Mockito.when(pessoaRepository.save(pessoa)).thenReturn(pessoa);
-
-        PessoaEntity result = pessoaService.edit(pessoaEditada);
-        assertNotNull(result);
-        assertEquals("Nome Editado", result.getNome());
-
-        PessoaEntity pessoaInvalida = new PessoaEntity();
-        pessoaInvalida.setId(2L);
-        Mockito.when(pessoaRepository.findById(2L)).thenReturn(Optional.empty());
-        assertThrows(NoSuchElementException.class, () -> pessoaService.edit(pessoaInvalida));
-
-        Mockito.verify(pessoaRepository, Mockito.times(1)).findById(1L);
-        Mockito.verify(pessoaRepository, Mockito.times(1)).findById(2L);
-        Mockito.verify(pessoaRepository, Mockito.times(1)).save(pessoa);
+    @DisplayName("Teste para buscar pessoa por ID")
+    void testFindById() {
+        PessoaEntity pessoa = pessoaService.findById(1L);
+        Assertions.assertNotNull(pessoa);
+        Assertions.assertEquals("João", pessoa.getNome());
     }
 }

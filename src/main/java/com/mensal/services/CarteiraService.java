@@ -24,7 +24,7 @@ public class CarteiraService {
     private PessoaRepository pessoaRepository;
 
     public CarteiraEntity save(CarteiraEntity carteira, Long id) {
-        PessoaEntity pessoa = pessoaRepository.findById(id).get();
+        PessoaEntity pessoa = pessoaRepository.findById(id).orElseThrow();
         carteira.setPessoa(pessoa);
         CarteiraEntity novaCarteira = carteiraRepository.save(carteira);
 
