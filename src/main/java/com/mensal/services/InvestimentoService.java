@@ -1,12 +1,14 @@
 package com.mensal.services;
 
-import com.mensal.entities.*;
+import com.mensal.entities.CaixaEntity;
+import com.mensal.entities.CarteiraEntity;
+import com.mensal.entities.InvestimentoEntity;
+import com.mensal.entities.MetaEntity;
 import com.mensal.repositories.CaixaRepository;
 import com.mensal.repositories.CarteiraRepository;
 import com.mensal.repositories.InvestimentoRepository;
 import com.mensal.repositories.MetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Meta;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,28 +45,25 @@ public class InvestimentoService {
 
     public InvestimentoEntity edit(InvestimentoEntity investimentos) {
         InvestimentoEntity investimentosBase = findById(investimentos.getId());
-        MetaEntity meta = investimentosBase.getMetas();
+        MetaEntity meta = investimentosBase.getMeta();
         CaixaEntity caixa = meta.getCarteira().getCaixa();
         float caixaAtual;
         float valorAtual;
 
-        if (investimentosBase != null) {
-            if (investimentos.getData() != null) {
-                investimentosBase.setData(investimentos.getData());
-            }
-            if (investimentos.getDescricao() != null) {
-                investimentosBase.setDescricao(investimentos.getDescricao());
-            }
-            if (investimentos.getValor() != 0 && investimentos.getValor() > 0) {
-                valorAtual = meta.getCompleto() - investimentosBase.getValor() + investimentos.getValor();
-                caixaAtual = caixa.getValor() - investimentosBase.getValor() + investimentos.getValor();
-                investimentosBase.getMetas().setCompleto(valorAtual);
-                caixa.setValor(caixaAtual);
-                investimentosBase.setValor(investimentos.getValor());
-            }
-            return investimentosRepository.save(investimentosBase);
+        if (investimentos.getData() != null) {
+            investimentosBase.setData(investimentos.getData());
         }
-        return null;
+        if (investimentos.getDescricao() != null) {
+            investimentosBase.setDescricao(investimentos.getDescricao());
+        }
+        if (investimentos.getValor() != 0 && investimentos.getValor() > 0) {
+            valorAtual = meta.getCompleto() - investimentosBase.getValor() + investimentos.getValor();
+            caixaAtual = caixa.getValor() - investimentosBase.getValor() + investimentos.getValor();
+            investimentosBase.getMeta().setCompleto(valorAtual);
+            caixa.setValor(caixaAtual);
+            investimentosBase.setValor(investimentos.getValor());
+        }
+        return investimentosRepository.save(investimentosBase);
     }
 
     private void updateCaixa(InvestimentoEntity investimento) {
@@ -83,7 +82,7 @@ public class InvestimentoService {
         List<MetaEntity> metas = carteira.getMetas();
         float novoSaldo;
         for (MetaEntity meta : metas) {
-            if (meta != null && Objects.equals(investimento.getMetas().getId(), meta.getId())) {
+            if (meta != null && Objects.equals(investimento.getMeta().getId(), meta.getId())) {
                 novoSaldo = meta.getCompleto() + investimento.getValor();
                 meta.setCompleto(novoSaldo);
                 metaRepository.save(meta);

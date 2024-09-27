@@ -43,12 +43,12 @@ public class MetaEntity {
     @Min(0)
     private float completo;
 
-    @OneToMany(mappedBy = "metas")
+    @OneToMany(mappedBy = "meta")
     @JsonIgnoreProperties({"receitas", "despesas", "metas", "caixa", "carteiras"})
     private List<InvestimentoEntity> investimentos;
 
     @ManyToOne
-    @JoinColumn(name = "metas")
+    @JoinColumn(name = "carteira_id")
     @JsonIgnoreProperties({"receitas", "despesas", "metas", "caixa", "carteiras", "investimentos", "pessoas", "carteiras"})
     private CarteiraEntity carteira;
 

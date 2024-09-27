@@ -7,35 +7,34 @@ import com.mensal.repositories.CaixaRepository;
 import com.mensal.repositories.CarteiraRepository;
 import com.mensal.repositories.DespesaRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class DespesaServiceTest {
+class DespesaServiceTest {
 
     @Autowired
     private DespesaService despesaService;
 
-    @Mock
+    @MockBean
     private DespesaRepository despesaRepository;
 
-    @Mock
+    @MockBean
     private CaixaRepository caixaRepository;
 
-    @Mock
+    @MockBean
     private CarteiraRepository carteiraRepository;
 
     private CarteiraEntity carteira;
@@ -43,31 +42,31 @@ public class DespesaServiceTest {
     private DespesaEntity despesa;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setup() {
         caixa = new CaixaEntity(1L, "Caixa de Teste", 1000f, null);
         carteira = new CarteiraEntity(1L, "Carteira de Teste", null, caixa, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         despesa = new DespesaEntity(1L, new Date(), "Despesa de Teste", 100f, carteira, null);
+
+        Mockito.when(carteiraRepository.findById(carteira.getId())).thenReturn(Optional.of(carteira));
+        Mockito.when(despesaRepository.save(Mockito.any(DespesaEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     @Test
-    public void testSaveDespesa() {
-        when(carteiraRepository.findById(carteira.getId())).thenReturn(Optional.of(carteira));
-        when(despesaRepository.save(despesa)).thenReturn(despesa);
-
+    @DisplayName("Teste de salvar despesa")
+    void testSaveDespesa() {
         DespesaEntity savedDespesa = despesaService.save(despesa);
 
         assertNotNull(savedDespesa);
         assertEquals(despesa.getDescricao(), savedDespesa.getDescricao());
-        verify(caixaRepository).save(caixa);
+        Mockito.verify(caixaRepository).save(caixa);
     }
 
     @Test
-    public void testFindAllByCarteira() {
+    @DisplayName("Teste de encontrar todas as despesas por carteira")
+    void testFindAllByCarteira() {
         List<DespesaEntity> despesas = new ArrayList<>();
         despesas.add(despesa);
-        when(carteiraRepository.findById(carteira.getId())).thenReturn(Optional.of(carteira));
-        when(despesaRepository.findAllByCarteira(carteira)).thenReturn(despesas);
+        Mockito.when(despesaRepository.findAllByCarteira(carteira)).thenReturn(despesas);
 
         List<DespesaEntity> foundDespesas = despesaService.findAllByCarteira(carteira.getId());
 
@@ -77,8 +76,9 @@ public class DespesaServiceTest {
     }
 
     @Test
-    public void testFindById() {
-        when(despesaRepository.findById(despesa.getId())).thenReturn(Optional.of(despesa));
+    @DisplayName("Teste de encontrar despesa por ID")
+    void testFindById() {
+        Mockito.when(despesaRepository.findById(despesa.getId())).thenReturn(Optional.of(despesa));
 
         DespesaEntity foundDespesa = despesaService.findById(despesa.getId());
 

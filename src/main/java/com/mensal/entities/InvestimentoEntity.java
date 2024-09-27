@@ -38,7 +38,7 @@ public class InvestimentoEntity {
     private CarteiraEntity carteira;
 
     @ManyToOne
-    @JoinColumn(name = "metas")
+    @JoinColumn(name = "meta_id")
     @JsonIgnoreProperties({"receitas", "despesas", "caixa", "investimentos", "pessoas", "carteiras"})
-    private MetaEntity metas;
+    private MetaEntity meta;
 }

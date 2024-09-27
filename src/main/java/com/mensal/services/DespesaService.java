@@ -41,24 +41,21 @@ public class DespesaService {
         CaixaEntity caixa = despesaBase.getCarteira().getCaixa();
         float valorAtual;
 
-        if (despesaBase != null) {
-            if (despesa.getData() != null) {
-                despesaBase.setData(despesa.getData());
-            }
-            if (despesa.getDescricao() != null) {
-                despesaBase.setDescricao(despesa.getDescricao());
-            }
-            if (despesa.getValor() >= 0 && despesa.getValor() < caixa.getValor()) {
-                valorAtual = caixa.getValor() - despesaBase.getValor() + despesa.getValor();
-                despesaBase.getCarteira().getCaixa().setValor(valorAtual);
-                despesaBase.setValor(despesa.getValor());
-            }
-            if (despesa.getTipos() != null) {
-                despesaBase.setTipos(despesa.getTipos());
-            }
-            return despesaRepository.save(despesaBase);
+        if (despesa.getData() != null) {
+            despesaBase.setData(despesa.getData());
         }
-        return null;
+        if (despesa.getDescricao() != null) {
+            despesaBase.setDescricao(despesa.getDescricao());
+        }
+        if (despesa.getValor() >= 0 && despesa.getValor() < caixa.getValor()) {
+            valorAtual = caixa.getValor() - despesaBase.getValor() + despesa.getValor();
+            despesaBase.getCarteira().getCaixa().setValor(valorAtual);
+            despesaBase.setValor(despesa.getValor());
+        }
+        if (despesa.getTipos() != null) {
+            despesaBase.setTipos(despesa.getTipos());
+        }
+        return despesaRepository.save(despesaBase);
     }
 
     private void updateCaixa(DespesaEntity despesa) {

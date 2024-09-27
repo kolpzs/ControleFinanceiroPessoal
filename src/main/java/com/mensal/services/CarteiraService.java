@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -101,6 +102,10 @@ public class CarteiraService {
 
     public List<String> relatorioMetas(Long id) {
         List<MetaEntity> metas = findById(id).getMetas();
+        if (metas == null) {
+            metas = Collections.emptyList();
+        }
+
         List<String> metasRetorno = new ArrayList<>();
         int i = 0;
         for (MetaEntity meta : metas) {
@@ -119,4 +124,5 @@ public class CarteiraService {
         }
         return metasRetorno;
     }
+
 }
